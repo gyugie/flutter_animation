@@ -91,17 +91,37 @@ class ArrivalPage extends StatelessWidget {
 class DepaturePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Depature Page'),
+    return MaterialApp(
+      title: 'Depature',
+      home: Scaffold(
+        appBar: AppBar(
+          title: Text('SnackBar Demo'),
+          ),
+          body: SnackBarPage(),
         ),
-      body: Center(
-         child: Column( // Replace with a Row for horizontal icon + text
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Icon(Icons.flight_takeoff, size: 50),
-            ],
-        ),
+    );
+  }
+}
+
+class SnackBarPage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: RaisedButton(
+        onPressed: () {
+          final snackbar = SnackBar(
+            content: Text('Yay A SnackBar'),
+            action: SnackBarAction(
+              label: "Undo",
+              onPressed: () {
+
+              },
+            ),
+          );
+
+          Scaffold.of(context).showSnackBar(snackbar);
+        },
+        child: Text('Show SnackBar'),
       ),
     );
   }
