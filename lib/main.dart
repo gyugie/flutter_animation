@@ -52,7 +52,7 @@ class MyHome extends StatelessWidget {
             ),
             ListTile(
               leading: Icon(Icons.flight_land),
-              title: Text('Depature'),
+              title: Text('SnackBar'),
               onTap: () {
                 //Update the state of the app
                 //...
@@ -76,13 +76,22 @@ class ArrivalPage extends StatelessWidget {
       appBar: AppBar(
         title: Text('Arrival Page'),
         ),
-      body: Center(
-         child: Column( // Replace with a Row for horizontal icon + text
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Icon(Icons.flight_land, size: 50),
-            ],
-        ),
+      body: OrientationBuilder(
+        builder: (context, orientation){
+          return GridView.count(
+            //create a grid with 2 columns in potrait mmode, or 3 column in landscape mode
+            crossAxisCount: orientation == Orientation.portrait ? 2 : 3,
+            // Generate 100 widget that display their index in the list
+            children: List.generate(100, (index){
+              return Center(
+                child: Text(
+                  'Item $index',
+                  style: Theme.of(context).textTheme.headline,
+                  ),
+                );
+            }),
+          );
+        },
       ),
     );
   }
