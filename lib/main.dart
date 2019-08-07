@@ -4,72 +4,71 @@ void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
   @override
-  Widget build(BuildContext context){
-    final appTitle = 'Form Validation Demo';
-
+  Widget build(BuildContext context) {
     return MaterialApp(
-      title: appTitle,
-      home: Scaffold(
-        appBar: AppBar(
-          title: Text(appTitle),
-        ),
-        body: MyCustomForm(),
-      ),
+      title: 'Text Field Focus',
+      home: MyCustomForm(),
     );
   }
 }
 
-
-//create a form widget
+// Define a custom Form widget.
 class MyCustomForm extends StatefulWidget {
   @override
-  MyCustomFormState createState(){
-    return MyCustomFormState();
-  }
+  _MyCustomFormState createState() => _MyCustomFormState();
 }
 
-//create a corresponding State class
-// this class holds data related to the form
-class MyCustomFormState extends State<MyCustomForm>{
-  //create global key that uniquely identifies the form widget
-  //and validation of the form
+// Define a corresponding State class.
+// This class holds data related to the form.
+class _MyCustomFormState extends State<MyCustomForm> {
+  // Define the focus node. To manage the lifecycle, create the FocusNode in
+  // the initState method, and clean it up in the dispose method.
+  FocusNode myFocusNode;
 
-  final _formKey = GlobalKey<FormState>();
+  @override
+  void initState() {
+    super.initState();
 
-  @override 
-  Widget build(BuildContext context){
-    return Form(
-      key: _formKey,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          TextFormField(
-            validator: (value){
-              if(value.isEmpty){
-                return 'Please enter some text';
-              }
-              return null;
-            },
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical:16.0),
-            child: RaisedButton(
-              onPressed: (){
-                //validate return true if the form is valid or false
-                //otherwise
+    myFocusNode = FocusNode();
+  }
 
-                if(_formKey.currentState.validate()){
-                  //if the form valid show a snackbar
-                  print(_formKey);
-                   Scaffold.of(context)
-                      .showSnackBar(SnackBar(content: Text('Processing Data')));
-                }
-              },
-              child: Text('Submit'),
-            ),
-          ),
-        ],
+  @override
+  void dispose() {
+    // Clean up the focus node when the Form is disposed.
+    myFocusNode.dispose();
+
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Text Field Focus'),
       ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          children: [
+            // The first text field is focused on as soon as the app starts.
+            TextField(
+              autofocus: true,
+            ),
+            // The second text field is focused on when a user taps the
+            // FloatingActionButton.
+            TextField(
+              focusNode: myFocusNode,
+            ),
+          ],
+        ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        // When the button is pressed,
+        // give focus to the text field using myFocusNode.
+        onPressed: () => FocusScope.of(context).requestFocus(myFocusNode),
+        tooltip: 'Focus Second Text Field',
+        child: Icon(Icons.edit),
+      ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 }
