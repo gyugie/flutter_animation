@@ -23,25 +23,13 @@ class MyCustomForm extends StatefulWidget {
 class _MyCustomFormState extends State<MyCustomForm> {
   // Create a text controller and use it to retrieve the current value
   // of the TextField.
-  final myController = TextEditingController();
-
-  @override
-  void initState() {
-    super.initState();
-
-    myController.addListener(_printLatestValue);
-  }
+  final iniValue = TextEditingController();
 
   @override
   void dispose() {
-    // Clean up the controller when the widget is removed from the widget tree.
-    // This also removes the _printLatestValue listener.
-    myController.dispose();
+    // Clean up the controller when the widget is disposed.
+    iniValue.dispose();
     super.dispose();
-  }
-
-  _printLatestValue() {
-    print("Second text field: ${myController.text}");
   }
 
   @override
@@ -52,19 +40,28 @@ class _MyCustomFormState extends State<MyCustomForm> {
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: <Widget>[
-            TextField(
-              onChanged: (text) {
-                print("First text field: $text");
-              },
-            ),
-            TextField(
-              controller: myController,
-            ),
-          ],
+        child: TextField(
+          controller: iniValue,
+          ),
         ),
-      ),
+        floatingActionButton: FloatingActionButton(
+          //when the preses button, show an alert dialog containing
+          //the text that user has entered into the text field
+          onPressed: (){
+            return showDialog(
+              context: context,
+              builder: (context){
+                return AlertDialog(
+                  //retrieve the text the that user user has entered by using the 
+                  //text editing controller
+                  content: Text(iniValue.text),
+                );
+              }, 
+            );
+          },
+          tooltip: 'Show me the value!',
+          child: Icon(Icons.text_fields),
+        ),
     );
   }
 }
