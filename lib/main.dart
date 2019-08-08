@@ -1,67 +1,65 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 void main() => runApp(MyApp());
 
-class MyApp extends StatelessWidget {
+//MyApp is a StatefulWidget This allows updating the state of the
+//widget when an item is removed
+class MyApp extends StatefulWidget {
+  MyApp({Key key}) : super(key: key);
+
+  @override
+ @override
+  MyAppState createState() {
+    return MyAppState();
+  }
+}
+
+class MyAppState extends State<MyApp> {
+  final items = List<String>.generate(10, (i) => "Item ${i + 1}");
+
   @override
   Widget build(BuildContext context) {
+   final title = 'Dismis Items';
+
     return MaterialApp(
-      title: 'Retrieve Text Input',
-      home: MyCustomForm(),
-    );
-  }
-}
-
-// Define a custom Form widget.
-class MyCustomForm extends StatefulWidget {
-  @override
-  _MyCustomFormState createState() => _MyCustomFormState();
-}
-
-// Define a corresponding State class.
-// This class holds data related to the Form.
-class _MyCustomFormState extends State<MyCustomForm> {
-  // Create a text controller and use it to retrieve the current value
-  // of the TextField.
-  final iniValue = TextEditingController();
-
-  @override
-  void dispose() {
-    // Clean up the controller when the widget is disposed.
-    iniValue.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Retrieve Text Input'),
+      title: title,
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: TextField(
-          controller: iniValue,
-          ),
+      home: Scaffold(
+        appBar: AppBar(
+          title: Text(title),
         ),
-        floatingActionButton: FloatingActionButton(
-          //when the preses button, show an alert dialog containing
-          //the text that user has entered into the text field
-          onPressed: (){
-            return showDialog(
-              context: context,
-              builder: (context){
-                return AlertDialog(
-                  //retrieve the text the that user user has entered by using the 
-                  //text editing controller
-                  content: Text(iniValue.text),
-                );
-              }, 
+      body: ListView.builder(
+        itemCount: items.length,
+        itemBuilder: (context, index){
+          final item = items[index];
+
+          return Dismissible(
+            //Each Dissmisible must contain a key, keys allow flutter to
+            //uniquely identify widgets
+            key: Key(item),
+            //provide a function that tells the app
+            //what to do after an item has been swiped away
+            onDismissed: (direction){
+              //remove the item from the data source
+              setState(() {
+                items.removeAt(index);
+              });
+
+              //Then show a sanckbar
+              Scaffold.of(context)
+              .showSnackBar(SnackBar(content: Text("$item dismissed")));
+            },
+
+            //show a red background as the item is swipped away
+            background: Container(color: Colors.redAccent),
+            child: ListTile(title: Text('$item')),
             );
           },
-          tooltip: 'Show me the value!',
-          child: Icon(Icons.text_fields),
         ),
+      ),
     );
   }
 }
