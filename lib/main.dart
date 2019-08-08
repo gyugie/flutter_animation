@@ -10,21 +10,54 @@ class MyApp extends StatelessWidget {
     
     return MaterialApp(
       title: title,
-      home: Scaffold(
+      home: MainScreen(),
+    );
+  }
+}
+
+class MainScreen extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
         appBar: AppBar(
-          title: Text(title),
+          title: Text('Main Screen'),
         ),
-        body: Stack(
-          children: <Widget>[
-            Center(child: CircularProgressIndicator()),
-            Center(
+        body: GestureDetector(
+          child: Hero(
+              tag: 'imageHero',
               child:FadeInImage.memoryNetwork(
                 placeholder: kTransparentImage,
                 image: 'https://fotos00.formulamoto.es/2016/05/19/646x260/ktmenduro2017.jpg',
               ),
-            ),
-          ],
+          ),
+          onTap: () {
+            Navigator.push(context, MaterialPageRoute(builder: (_){
+              return DetailScreen();
+            }));
+          },
         ),
+      );
+  }
+}
+
+
+class DetailScreen extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: GestureDetector(
+        child: Center(
+          child: Hero(
+            tag: 'imageHero',
+            child: FadeInImage.memoryNetwork(
+                placeholder: kTransparentImage,
+                image: 'https://fotos00.formulamoto.es/2016/05/19/646x260/ktmenduro2017.jpg',
+              ),
+          ),
+        ),
+        onTap: () {
+          Navigator.pop(context);
+        },
       ),
     );
   }
